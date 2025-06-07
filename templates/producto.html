@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block title %}{{ producto.nombre }} - Mimitos{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <!-- Imagen del producto -->
+        <div class="col-md-6">
+            <img src="{{ producto.imagen }}" class="img-fluid rounded" alt="{{ producto.nombre }}">
+        </div>
+        
+        <!-- Información del producto -->
+        <div class="col-md-6">
+            <h1 class="mb-4">{{ producto.nombre }}</h1>
+            <p class="lead">{{ producto.descripcion }}</p>
+            
+            <div class="mb-4">
+                <h3 class="text-primary">${{ producto.precio }}</h3>
+                <p class="text-muted">Stock disponible: {{ producto.stock }}</p>
+            </div>
+            
+            <!-- Cantidad y botón de compra -->
+            <div class="mb-4">
+                <div class="input-group mb-3" style="max-width: 200px;">
+                    <button class="btn btn-outline-secondary" type="button" onclick="decrementarCantidad()">-</button>
+                    <input type="number" class="form-control text-center" id="cantidad" value="1" min="1" max="{{ producto.stock }}">
+                    <button class="btn btn-outline-secondary" type="button" onclick="incrementarCantidad()">+</button>
+                </div>
+            </div>
+            
+            <div class="d-grid gap-2">
+                <button class="btn btn-primary btn-lg" onclick="agregarAlCarrito('{{ producto._id }}')">
+                    Agregar al Carrito
+                </button>
+                <a href="{{ url_for('productos') }}" class="btn btn-outline-secondary">
+                    Volver a Productos
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+let cantidad = 1;
+const stockMaximo = {{ producto.stock }};
+
+function incrementarCantidad() {
+    if (cantidad < stockMaximo) {
+        cantidad++;
+        document.getElementById('cantidad').value = cantidad;
+    }
+}
+
+function decrementarCantidad() {
+    if (cantidad > 1) {
+        cantidad--;
+        document.getElementById('cantidad').value = cantidad;
+    }
+}
+
+function agregarAlCarrito(productoId) {
+    // Aquí implementaremos la lógica del carrito más adelante
+    alert(`Producto agregado al carrito: ${cantidad} unidad(es)`);
+}
+</script>
+{% endblock %} 

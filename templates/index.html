@@ -1,0 +1,334 @@
+{% extends "base.html" %}
+
+{% block title %}Mimitos - Inicio{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero" style="padding-bottom: 300px;">
+    <div class="hero-overlay"></div>
+    <div class="container">
+        <div class="hero-content">
+            <div class="hero-text" style="margin-top: -80px;">
+                <img src="{{ url_for('static', filename='images/logo.jpeg') }}" alt="Mimitos Logo" class="hero-logo mb-4 slide-in" style="border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); padding: 10px; background: rgba(255,255,255,0.1); backdrop-filter: blur(5px);">
+                <h1 class="slide-in delay-1 text-white">Bienvenido a <span class="highlight">Mimitos</span></h1>
+                <p class="lead mb-4 text-white slide-in delay-2" style="text-shadow: 2px 2px 4px rgba(0,0,0,0.5); margin-top: -20px;">Tu tienda de confianza para el cuidado de tus mascotas</p>
+                <div class="hero-buttons slide-in delay-3" style="margin-top: -10px;">
+                    <a href="{{ url_for('productos') }}" class="btn btn-primary btn-lg">
+                        <i class="bi bi-shop me-2"></i>Ver Productos
+                    </a>
+                    <a href="#contacto" class="btn btn-primary btn-lg ms-3">
+                        <i class="bi bi-envelope me-2"></i>Contáctanos
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="hero-wave" style="position: absolute; bottom: 0; left: 0; width: 100%;">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
+            <path fill="#FFF8F0" fill-opacity="1" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,122.7C672,117,768,139,864,149.3C960,160,1056,160,1152,138.7C1248,117,1344,75,1392,53.3L1440,32L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
+        </svg>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="container my-5">
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm fade-in-up" style="background: linear-gradient(135deg, #FC7600, #E56A00);">
+                <div class="card-body text-center">
+                    <i class="bi bi-truck fs-1 text-white mb-3"></i>
+                    <h5 class="card-title text-white">Envío Gratis</h5>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm fade-in-up" style="background: linear-gradient(135deg, #FC7600, #E56A00);">
+                <div class="card-body text-center">
+                    <i class="bi bi-shield-check fs-1 text-white mb-3"></i>
+                    <h5 class="card-title text-white">Calidad Garantizada</h5>
+                    <p class="card-text text-white">Productos de primera calidad</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm fade-in-up" style="background: linear-gradient(135deg, #FC7600, #E56A00);">
+                <div class="card-body text-center">
+                    <i class="bi bi-headset fs-1 text-white mb-3"></i>
+                    <h5 class="card-title text-white">Soporte 24/7</h5>
+                    <p class="card-text text-white">Atención personalizada</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Products -->
+<section class="container my-5">
+    <h2 class="text-center mb-5 fade-in-up" style="position: relative; display: inline-block; left: 50%; transform: translateX(-50%); padding: 0 20px;">
+        <span style="color: #FC7600; font-weight: 700; font-size: 2.5rem; text-shadow: 2px 2px 4px rgba(0,0,0,0.1);">Productos Destacados</span>
+        <div style="position: absolute; bottom: -10px; left: 0; width: 100%; height: 3px; background: linear-gradient(90deg, transparent, #FC7600, transparent);"></div>
+    </h2>
+    <div class="product-grid">
+        {% for producto in productos.items %}
+        <div class="product-card fade-in-up">
+            <div class="product-image-wrapper">
+                <img src="{{ producto.imagen }}" class="product-image" alt="{{ producto.nombre }}">
+            </div>
+            <div class="product-info">
+                <h3 class="product-title">{{ producto.nombre }}</h3>
+                <p class="product-description">{{ producto.descripcion }}</p>
+                <div class="product-footer">
+                    <span class="product-price">${{ producto.precio }}</span>
+                    <a href="{{ url_for('producto', id=producto._id) }}" class="btn-details">
+                        Ver Detalles
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Paginación -->
+    {% if productos.pages > 1 %}
+    <div class="pagination-container mt-5">
+        <nav aria-label="Navegación de productos">
+            <ul class="pagination justify-content-center">
+                {% if productos.has_prev %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ url_for('home', page=productos.prev_num) }}" aria-label="Anterior">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                {% endif %}
+
+                {% for page_num in productos.iter_pages(left_edge=2, left_current=2, right_current=3, right_edge=2) %}
+                    {% if page_num %}
+                        {% if page_num == productos.page %}
+                        <li class="page-item active">
+                            <span class="page-link">{{ page_num }}</span>
+                        </li>
+                        {% else %}
+                        <li class="page-item">
+                            <a class="page-link" href="{{ url_for('home', page=page_num) }}">{{ page_num }}</a>
+                        </li>
+                        {% endif %}
+                    {% else %}
+                        <li class="page-item disabled">
+                            <span class="page-link">...</span>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+
+                {% if productos.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ url_for('home', page=productos.next_num) }}" aria-label="Siguiente">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+    {% endif %}
+</section>
+
+<!-- Sucursales Section -->
+<section id="sucursales" class="container my-5">
+    <h2 class="text-center mb-4 fade-in-up" style="position: relative; display: inline-block; left: 50%; transform: translateX(-50%); padding: 0 20px;">
+        <span style="color: #FC7600; font-weight: 700; font-size: 2.5rem; text-shadow: 2px 2px 4px rgba(0,0,0,0.1);">Nuestras Sucursales</span>
+        <div style="position: absolute; bottom: -10px; left: 0; width: 100%; height: 3px; background: linear-gradient(90deg, transparent, #FC7600, transparent);"></div>
+    </h2>
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm fade-in-up" style="background-color: #FFF8F0; border-left: 5px solid #FC7600 !important;">
+                <div class="card-body text-center">
+                    <i class="bi bi-geo-alt fs-1 text-primary mb-3"></i>
+                    <h5 class="card-title">Sucursal Luján Centro</h5>
+                    <p class="card-text">Lavalle 641<br>Luján, Buenos Aires</p>
+                    <p class="card-text"><small class="text-muted">Lun-Sáb: 10:00 - 13:00 y 16:00 - 20:00</small></p>
+                    <div class="mt-3">
+                        <iframe 
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3283.1234567890123!2d-59.12345678901234!3d-34.12345678901234!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95bc7d7c9c7c9c7c%3A0x9c7c9c7c9c7c9c7c!2sLavalle+641%2C+Luj%C3%A1n%2C+Buenos+Aires!5e0!3m2!1ses!2sar!4v1234567890123!5m2!1ses!2sar" 
+                            width="100%" 
+                            height="200" 
+                            style="border:0; border-radius: 8px;" 
+                            allowfullscreen="" 
+                            loading="lazy" 
+                            referrerpolicy="no-referrer-when-downgrade">
+                        </iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm fade-in-up" style="background-color: #FFF8F0; border-left: 5px solid #FC7600 !important;">
+                <div class="card-body text-center">
+                    <i class="bi bi-geo-alt fs-1 text-primary mb-3"></i>
+                    <h5 class="card-title">Sucursal Open Door</h5>
+                    <p class="card-text">Avenida Cabre 2041<br>Open Door, Buenos Aires</p>
+                    <p class="card-text"><small class="text-muted">Lun-Vie: 09:00 - 17:00</small></p>
+                    <div class="mt-3">
+                        <iframe 
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3288.058393969939!2d-59.072654124949445!3d-34.501403852100786!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95bc80f076abfc99%3A0xe2d89757e1d4c16b!2sBv.%20Dr.%20Domingo%20Cabred%202041%2C%20B6708APE%20Luj%C3%A1n%2C%20Provincia%20de%20Buenos%20Aires!5e0!3m2!1ses!2sar!4v1749271393585!5m2!1ses!2sar" 
+                            width="100%" 
+                            height="200" 
+                            style="border:0; border-radius: 8px;" 
+                            allowfullscreen="" 
+                            loading="lazy" 
+                            referrerpolicy="no-referrer-when-downgrade">
+                        </iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm fade-in-up" style="background-color: #FFF8F0; border-left: 5px solid #FC7600 !important;">
+                <div class="card-body text-center">
+                    <i class="bi bi-geo-alt fs-1 text-primary mb-3"></i>
+                    <h5 class="card-title">Sucursal Barrio Mirador</h5>
+                    <p class="card-text">Independencia 1939<br>Luján, Buenos Aires</p>
+                    <p class="card-text"><small class="text-muted">Lun-Vie: 09:00 - 17:00</small></p>
+                    <div class="mt-3">
+                        <iframe 
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3283.1234567890123!2d-59.12345678901234!3d-34.12345678901234!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95bc7d7c9c7c9c7c%3A0x9c7c9c7c9c7c9c7c!2sIndependencia+1939%2C+Luj%C3%A1n%2C+Buenos+Aires!5e0!3m2!1ses!2sar!4v1234567890123!5m2!1ses!2sar" 
+                            width="100%" 
+                            height="200" 
+                            style="border:0; border-radius: 8px;" 
+                            allowfullscreen="" 
+                            loading="lazy" 
+                            referrerpolicy="no-referrer-when-downgrade">
+                        </iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Quiénes Somos Section -->
+<section id="quienes-somos" class="container my-5">
+    <div class="row justify-content-center align-items-center">
+        <div class="col-md-4 text-center mb-4 mb-md-0">
+            <img src="{{ url_for('static', filename='images/logo.jpeg') }}" alt="Mimitos Logo" class="img-fluid rounded-circle shadow-lg fade-in-up" style="max-width: 250px; border: 5px solid #FC7600;">
+        </div>
+        <div class="col-md-8 text-center">
+            <h2 class="mb-4 fade-in-up" style="position: relative; display: inline-block; padding: 0 20px;">
+                <span style="color: #FC7600; font-weight: 700; font-size: 2.5rem; text-shadow: 2px 2px 4px rgba(0,0,0,0.1);">Quiénes Somos</span>
+                <div style="position: absolute; bottom: -10px; left: 0; width: 100%; height: 3px; background: linear-gradient(90deg, transparent, #FC7600, transparent);"></div>
+            </h2>
+            <p class="lead fade-in-up">Somos dos jóvenes emprendedores apasionados por los animales que comenzamos este hermoso proyecto en 2024.</p>
+            <p class="mb-4 fade-in-up">Todo comenzó con un pequeño local en Luján Centro, donde compartíamos nuestra pasión por el cuidado de las mascotas. Gracias al apoyo de nuestra comunidad y al amor que le ponemos a lo que hacemos, hoy contamos con tres sucursales estratégicamente ubicadas para servir mejor a nuestros clientes y sus mascotas.</p>
+            <p class="mb-4 fade-in-up">Nuestro compromiso con la calidad y el servicio nos ha permitido crecer rápidamente, pero mantenemos el mismo espíritu emprendedor y la misma dedicación que tuvimos desde el primer día.</p>
+            <div class="row mt-4">
+                <div class="col-md-6">
+                    <div class="card border-0 shadow-sm fade-in-up" style="background-color: #FFF8F0;">
+                        <div class="card-body">
+                            <i class="bi bi-heart-fill text-primary fs-1 mb-3"></i>
+                            <h5>Nuestra Misión</h5>
+                            <p>Brindar productos de calidad para el cuidado y bienestar de tus mascotas.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card border-0 shadow-sm fade-in-up" style="background-color: #FFF8F0;">
+                        <div class="card-body">
+                            <i class="bi bi-star-fill text-primary fs-1 mb-3"></i>
+                            <h5>Nuestra Visión</h5>
+                            <p>Ser la tienda de mascotas más confiable y cercana a nuestros clientes.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Contacto Section -->
+<section id="contacto" class="container my-5">
+    <h2 class="text-center mb-4 fade-in-up" style="position: relative; display: inline-block; left: 50%; transform: translateX(-50%); padding: 0 20px;">
+        <span style="color: #FC7600; font-weight: 700; font-size: 2.5rem; text-shadow: 2px 2px 4px rgba(0,0,0,0.1);">Contáctanos</span>
+        <div style="position: absolute; bottom: -10px; left: 0; width: 100%; height: 3px; background: linear-gradient(90deg, transparent, #FC7600, transparent);"></div>
+    </h2>
+    <div class="row">
+        <div class="col-md-6">
+            <form action="{{ url_for('enviar_contacto') }}" method="POST" class="needs-validation fade-in-up" novalidate>
+                <div class="mb-3">
+                    <label for="nombre" class="form-label">Nombre</label>
+                    <input type="text" class="form-control" id="nombre" name="nombre" required>
+                </div>
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="email" name="email" required>
+                </div>
+                <div class="mb-3">
+                    <label for="mensaje" class="form-label">Mensaje</label>
+                    <textarea class="form-control" id="mensaje" name="mensaje" rows="4" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Enviar Mensaje</button>
+            </form>
+        </div>
+        <div class="col-md-6">
+            <div class="card h-100 border-0 shadow-sm fade-in-up">
+                <div class="card-body">
+                    <h5 class="card-title mb-4">Información de Contacto</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-3">
+                            <i class="bi bi-geo-alt text-primary me-2"></i>
+                            Lavalle 641, Luján, Buenos Aires
+                        </li>
+                        <li class="mb-3">
+                            <i class="bi bi-telephone text-primary me-2"></i>
+                            2323 313985
+                        </li>
+                        <li class="mb-3">
+                            <i class="bi bi-envelope text-primary me-2"></i>
+                            enzopiro80@gmail.com
+                        </li>
+                        <li class="mb-3">
+                            <i class="bi bi-clock text-primary me-2"></i>
+                            Lun-Sáb: 09:00 - 13:00 y 16:00 - 20:00
+                        </li>
+                    </ul>
+                    <div class="mt-4">
+                        <h6 class="mb-3">Síguenos en redes sociales</h6>
+                        <a href="https://www.facebook.com/share/19nogWVBUi/?mibextid=wwXIfr" target="_blank" class="text-primary me-3" title="Facebook">
+                            <i class="bi bi-facebook fs-4"></i>
+                        </a>
+                        <a href="https://instagram.com/mimitos.balanceados" target="_blank" class="text-primary me-3" title="Instagram">
+                            <i class="bi bi-instagram fs-4"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    // Función para detectar cuando un elemento es visible en el viewport
+    function isElementInViewport(el) {
+        const rect = el.getBoundingClientRect();
+        return (
+            rect.top >= 0 &&
+            rect.left >= 0 &&
+            rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+            rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+        );
+    }
+
+    // Función para manejar el scroll y mostrar elementos
+    function handleScroll() {
+        const elements = document.querySelectorAll('.fade-in-up');
+        elements.forEach(element => {
+            if (isElementInViewport(element)) {
+                element.classList.add('visible');
+            }
+        });
+    }
+
+    // Agregar event listener para el scroll
+    window.addEventListener('scroll', handleScroll);
+    // Ejecutar una vez al cargar la página
+    window.addEventListener('load', handleScroll);
+</script>
+{% endblock %} 

@@ -1,0 +1,78 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Gestión de Productos - Panel de Administración{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3">Gestión de Productos</h1>
+        <a href="{{ url_for('admin_nuevo_producto') }}" class="btn btn-primary">
+            <i class="bi bi-plus"></i> Nuevo Producto
+        </a>
+    </div>
+
+    <!-- Filtros -->
+    <div class="card shadow mb-4">
+        <div class="card-body">
+            <form class="row g-3">
+                <div class="col-md-4">
+                    <input type="text" class="form-control" placeholder="Buscar producto..." name="search">
+                </div>
+                <div class="col-md-3">
+                    <select class="form-select" name="categoria">
+                        <option value="">Todas las categorías</option>
+                        <option value="perros">Perros</option>
+                        <option value="gatos">Gatos</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary w-100">Filtrar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Tabla de Productos -->
+    <div class="card shadow">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Imagen</th>
+                            <th>Nombre</th>
+                            <th>Categoría</th>
+                            <th>Precio</th>
+                            <th>Stock</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for producto in productos %}
+                        <tr>
+                            <td>
+                                <img src="{{ producto.imagen }}" alt="{{ producto.nombre }}" style="width: 50px; height: 50px; object-fit: cover;">
+                            </td>
+                            <td>{{ producto.nombre }}</td>
+                            <td>{{ producto.categoria }}</td>
+                            <td>${{ producto.precio }}</td>
+                            <td>{{ producto.stock }}</td>
+                            <td>
+                                <div class="btn-group" role="group">
+                                    <a href="{{ url_for('admin_editar_producto', id=producto._id) }}" class="btn btn-primary btn-sm">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <a href="{{ url_for('admin_eliminar_producto', id=producto._id) }}" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de eliminar este producto?')">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 
